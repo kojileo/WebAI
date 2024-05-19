@@ -11,13 +11,19 @@ from langchain.callbacks import get_openai_callback
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from dotenv import load_dotenv
+import os
 
+# .env ファイルから環境変数をロード
+load_dotenv()
+
+# 最初に set_page_config を呼び出す
+st.set_page_config(
+    page_title="Website Summarizer",
+    page_icon="🤗"
+)
 
 def init_page():
-    st.set_page_config(
-        page_title="Website Summarizer",
-        page_icon="🤗"
-    )
     st.header("Website Summarizer 🤗")
     st.sidebar.title("Options")
 
@@ -32,13 +38,13 @@ def init_messages():
 
 
 def select_model():
-    model = st.sidebar.radio("Choose a model:", ("GPT-3.5", "GPT-4"))
+    model = st.sidebar.radio("Choose a model:", ("GPT-3.5", "GPT-4"), key="model_radio")
     if model == "GPT-3.5":
         model_name = "gpt-3.5-turbo"
     else:
         model_name = "gpt-4"
 
-    return ChatOpenAI(temperature=0, model_name=model_name)
+    return ChatOpenAI(temperature=0, model_name=model_name, openai_api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def get_url_input():
@@ -131,4 +137,5 @@ def main():
         st.sidebar.markdown(f"- ${cost:.5f}")
 
 if __name__ == '__main__':
+    main()
     main()
